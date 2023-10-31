@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.18;
 
-import {Test} from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {Voting} from "../src/Voting.sol";
 import "../script/DeployVoting.s.sol";
 
@@ -14,10 +14,11 @@ contract VotingTest is Test {
 
     function setUp() public {       
        deployer = new DeployVoting();
-       (voting, OWNER) = deployer.run();
+       voting = deployer.run();
+       OWNER = voting.getOwner();
     }
 
-    //Adding a candidate and verifying if the candidate's information is correct.
+    
     function testAddCandidateFailedIfNotOwner() public {
         string memory candidateName = "ikenna";
         vm.prank(USER);
@@ -75,7 +76,26 @@ contract VotingTest is Test {
         voting.addCandidate(candidate2);
 
         assertEq(2, voting.viewCandidates().length);
+    }
+
+    function testThatUsersCantVoteForACandidateNotOnTheBallot() public {
+        vm.prank(USER);
+        vm.expectRevert();
+        voting.vote(0);
+    }
+
+    function testThatTheAmountOfVotesIncreaseWhenASuccessfulVoteHappens() public {
+        vm.prank(OWNER);
+        string memory candidate1 = "ikenna";
+        voting.addCandidate(candidate1);
+
+        vm.prank(USER);
+        voting.vote(0);
+
+        assertEq(1, voting.viewCandidates()[0].amountOfVotes);
 
     }
+
+    
    
 }

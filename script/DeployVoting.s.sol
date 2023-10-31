@@ -7,11 +7,11 @@ import {Voting} from "../src/Voting.sol";
 
 contract DeployVoting is Script{
 
-    function run() external returns (Voting,address) {
+    function run() external returns (Voting) {
         vm.startBroadcast();
-        Voting voting = new Voting(msg.sender);
+        Voting voting = new Voting();
         vm.stopBroadcast();
-        return (voting, msg.sender);
+        return voting;
     }
     
 }

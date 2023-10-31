@@ -48,8 +48,8 @@ contract Voting {
     event Voted(address voter, uint256 candidateIndex);
 
 
-    constructor(address _owner) {
-        i_owner = _owner;
+    constructor() {
+        i_owner = msg.sender;
     }
 
     //modifier
@@ -85,6 +85,10 @@ contract Voting {
 
     function viewCandidates() public view returns (Candidate[] memory){
         return candidates;
+    }
+
+    function getOwner() external view returns (address){
+        return i_owner;
     }
 }
 
